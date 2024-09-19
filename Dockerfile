@@ -1,18 +1,13 @@
-FROM dockerfile/ubuntu
+FROM alpine
 
-RUN \
-  add-apt-repository -y ppa:nginx/stable && \
-  apt-get update && \
-  apt-get install -y nginx && \
-  rm -rf /var/lib/apt/lists/* && \
-  echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
-  chown -R www-data:www-data /var/lib/nginx
+RUN  apk add --no-cache nginx \
+  && mkdir -p /tmp/nginx
 
-VOLUME ["/etc/nginx/sites-enabled", "/etc/nginx/certs", "/etc/nginx/conf.d", "/var/log/nginx", "/var/www/html"]
+VOLUME [ "/etc/nginx" ]
 
-WORKDIR /etc/nginx
+EXPOSE 80/tcp 443/tcp
 
-CMD ["nginx"]
+COPY --from=src nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 80
-EXPOSE 443
+ENTRYPOINT ["nginx"]
+CMD ["-c", "/etc/nginx/nginx.conf"]
