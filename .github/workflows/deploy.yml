@@ -20,7 +20,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag nginx:$(date +%s)
+        run:
+          ls -la
+          docker build . --file Dockerfile --tag nginx:$(date +%s) 
         
       - name: Docker Push
         run: docker push frodoslaw/nginx
