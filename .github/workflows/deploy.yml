@@ -25,7 +25,7 @@ jobs:
         run: echo "TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
         
       - name: Build an image from Dockerfile
-        run: docker build ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ env.TAG }}
+        run: docker build --file Dockerfile ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ env.TAG }} .
         
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
