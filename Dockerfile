@@ -1,15 +1,9 @@
-FROM ubuntu:24.04
+FROM nginx:1.27.4-alpine-slim
 
-RUN apt-get update && \
-    apt-get install -y -q curl gnupg2
-RUN curl http://nginx.org/keys/nginx_signing.key | apt-key add -
+COPY index.html /usr/share/nginx/html
 
-RUN apt-get update && \
-    apt-get install -y -q nginx
+EXPOSE 80
 
-# ADD nginx.conf /etc/nginx/
-# ADD server.conf /etc/nginx/conf.d
-
-EXPOSE 443 80
+VOLUME /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
