@@ -1,17 +1,17 @@
-name: Deploy Docker Image CI
+name: Build and Push Docker Image
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-
   build:
-
+    env:
+      PROJECT_NAME: 'nginx'
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -25,12 +25,12 @@ jobs:
         run: echo "TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
         
       - name: Build an image from Dockerfile
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ env.TAG }} .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }} .
         
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ env.TAG }}'
+          image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -49,5 +49,5 @@ jobs:
           context: .
           push: true
           tags: |
-            frodoslaw/nginx:latest
-            frodoslaw/nginx:${{ env.TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }}
