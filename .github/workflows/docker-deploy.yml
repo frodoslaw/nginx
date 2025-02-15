@@ -29,6 +29,8 @@ jobs:
         
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.29.0
+        env:
+          TRIVY_DISABLE_VEX_NOTICE: true
         with:
           image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }}'
           format: 'table'
@@ -43,11 +45,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }}
+      # - name: Build and push Docker image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: |
+      #       ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:latest
+      #       ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }}
