@@ -28,7 +28,7 @@ jobs:
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }} .
         
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.29.0
         with:
           image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }}'
           format: 'table'
