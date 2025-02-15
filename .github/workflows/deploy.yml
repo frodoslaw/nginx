@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Check out the repo
         uses: actions/checkout@v4
         
       - name: Set up Docker Buildx
@@ -25,11 +25,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build the Docker image
-        run: |
-          ls -la
-          docker build . --file Dockerfile --tag nginx:$(date +%s)
         
-      - name: Docker Push
-        run: docker push frodoslaw/nginx
+      - name: Prepare Date-Time Tag
+        id: datetime
+        run: echo "TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+          
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            frodoslaw/nginx:latest
+            frodoslaw/nginx:${{ env.TAG }}
