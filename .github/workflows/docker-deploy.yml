@@ -53,7 +53,6 @@ jobs:
         with:
           context: .
           push: true
-          platforms: all
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }}
