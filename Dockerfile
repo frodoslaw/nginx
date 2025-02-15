@@ -1,13 +1,15 @@
-FROM alpine
+FROM ubuntu:24.04
 
-RUN  apk add --no-cache nginx \
-  && mkdir -p /tmp/nginx
+RUN apt-get update && \
+    apt-get install -y -q curl gnupg2
+RUN curl http://nginx.org/keys/nginx_signing.key | apt-key add -
 
-VOLUME [ "/etc/nginx" ]
+RUN apt-get update && \
+    apt-get install -y -q nginx
 
-EXPOSE 80/tcp 443/tcp
+ADD nginx.conf /etc/nginx/
+ADD server.conf /etc/nginx/conf.d
 
-COPY --from=src nginx.conf /etc/nginx/nginx.conf
+EXPOSE 443 80
 
-ENTRYPOINT ["nginx"]
-CMD ["-c", "/etc/nginx/nginx.conf"]
+CMD ["nginx", "-g", "daemon off;"]
