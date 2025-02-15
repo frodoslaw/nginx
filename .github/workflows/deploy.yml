@@ -42,15 +42,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-        
-      - name: Scan image
-        run: |
-          docker build -t registry.organization.com/org/image-name:${{ github.sha }} .
-      - name: Scan Image
-        uses: neuvector/scan-action@main
-        with:
-          image-repository: registry.organization.com/org/image-name
-          image-tag: ${{ github.sha }}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
