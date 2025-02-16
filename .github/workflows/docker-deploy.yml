@@ -16,6 +16,9 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
         
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2
@@ -28,7 +31,9 @@ jobs:
         run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }} .
         
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.29.0
+        env:
+          TRIVY_DISABLE_VEX_NOTICE: true
         with:
           image-ref: '${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }}'
           format: 'table'
@@ -48,6 +53,7 @@ jobs:
         with:
           context: .
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/${{env.PROJECT_NAME}}:${{ env.TAG }}
